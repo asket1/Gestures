@@ -1,11 +1,103 @@
 import cv2
 import mediapipe as mp
 import os
+
+def function1():
+    # depth = hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z - \
+    #          hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP].z
+
+    INDEX_BASE = (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.INDEX_FINGER_MCP].x) ** 2 + \
+                 (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y - hand_landmarks.landmark[
+                     mp_hands.HandLandmark.INDEX_FINGER_MCP].y) ** 2 + \
+                 (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z - hand_landmarks.landmark[
+                     mp_hands.HandLandmark.INDEX_FINGER_MCP].z) ** 2
+    INDEX_TIP = (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.INDEX_FINGER_TIP].x) ** 2 + \
+                (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y - hand_landmarks.landmark[
+                    mp_hands.HandLandmark.INDEX_FINGER_TIP].y) ** 2 + \
+                (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z - hand_landmarks.landmark[
+                    mp_hands.HandLandmark.INDEX_FINGER_TIP].z) ** 2
+    INDEX_COEF = INDEX_TIP/INDEX_BASE-1
+    MIDDLE_BASE = (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.MIDDLE_FINGER_MCP].x) ** 2 + \
+                 (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y - hand_landmarks.landmark[
+                     mp_hands.HandLandmark.MIDDLE_FINGER_MCP].y) ** 2 + \
+                 (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z - hand_landmarks.landmark[
+                     mp_hands.HandLandmark.MIDDLE_FINGER_MCP].z) ** 2
+    MIDDLE_TIP = (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.MIDDLE_FINGER_TIP].x) ** 2 + \
+                (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y - hand_landmarks.landmark[
+                    mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y) ** 2 + \
+                (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z - hand_landmarks.landmark[
+                    mp_hands.HandLandmark.MIDDLE_FINGER_TIP].z) ** 2
+    MIDDLE_COEF = MIDDLE_TIP/MIDDLE_BASE-1
+
+    RING_BASE = (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.RING_FINGER_MCP].x) ** 2 + \
+                  (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y - hand_landmarks.landmark[
+                      mp_hands.HandLandmark.RING_FINGER_MCP].y) ** 2 + \
+                  (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z - hand_landmarks.landmark[
+                      mp_hands.HandLandmark.RING_FINGER_MCP].z) ** 2
+    RING_TIP = (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.RING_FINGER_TIP].x) ** 2 + \
+                 (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y - hand_landmarks.landmark[
+                     mp_hands.HandLandmark.RING_FINGER_TIP].y) ** 2 + \
+                 (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z - hand_landmarks.landmark[
+                     mp_hands.HandLandmark.RING_FINGER_TIP].z) ** 2
+    RING_COEF = RING_TIP / RING_BASE - 1
+
+    PINKY_BASE = (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.PINKY_MCP].x) ** 2 + \
+                (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y - hand_landmarks.landmark[
+                    mp_hands.HandLandmark.PINKY_MCP].y) ** 2 + \
+                (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z - hand_landmarks.landmark[
+                    mp_hands.HandLandmark.PINKY_MCP].z) ** 2
+    PINKY_TIP = (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.PINKY_TIP].x) ** 2 + \
+               (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y - hand_landmarks.landmark[
+                   mp_hands.HandLandmark.PINKY_TIP].y) ** 2 + \
+               (hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z - hand_landmarks.landmark[
+                   mp_hands.HandLandmark.PINKY_TIP].z) ** 2
+    PINKY_COEF = PINKY_TIP / PINKY_BASE - 1
+
+    if MIDDLE_COEF < 0 and INDEX_COEF > 0:
+        # INDEX_ANGLE_X = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].x - hand_landmarks.landmark[
+        # mp_hands.HandLandmark.MIDDLE_FINGER_TIP].x
+        # INDEX_ANGLE_Y = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].y - hand_landmarks.landmark[
+        #     mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y
+        # INDEX_ANGLE = INDEX_ANGLE_X/INDEX_ANGLE_Y
+        INDEX_LENGTH = (hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.INDEX_FINGER_TIP].x) ** 2 + \
+                 (hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].y - hand_landmarks.landmark[
+                     mp_hands.HandLandmark.INDEX_FINGER_TIP].y) ** 2
+        INDEX_X = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].x - hand_landmarks.landmark[
+        mp_hands.HandLandmark.INDEX_FINGER_TIP].x
+        INDEX_ANGLE = INDEX_X/INDEX_LENGTH
+        if INDEX_ANGLE > 2:
+            print('left')
+        elif INDEX_ANGLE < -2:
+            print('right')
+
+    if INDEX_COEF < 0 and MIDDLE_COEF < 0 and RING_COEF < 0 and PINKY_COEF < 0:
+        print('stop')
+    #print(hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x)
+    #print(hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y)
+    # print(INDEX_COEF)
+    # print(MIDDLE_COEF)
+    # print(RING_COEF)
+    # print(PINKY_COEF)
+    #
+    # if height > 0.22:
+    #     print('close')
+    # if height < 0.18:
+    #     print('far')
+    length1 = hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y
+
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
-data1 = []
 # For static images:
 IMAGE_FILES = []
 with mp_hands.Hands(
@@ -47,6 +139,7 @@ with mp_hands.Hands(
       mp_drawing.plot_landmarks(
         hand_world_landmarks, mp_hands.HAND_CONNECTIONS, azimuth=5)
 
+
 # For webcam input:
 if os.path.exists("1.txt"):
   os.remove("1.txt")
@@ -80,30 +173,10 @@ with mp_hands.Hands(
             mp_hands.HAND_CONNECTIONS,
             mp_drawing_styles.get_default_hand_landmarks_style(),
             mp_drawing_styles.get_default_hand_connections_style())
-        # print(
-        #     f'Index finger tip coordinates: (',
-        #     f'{hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x}, '
-        #     f'{hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y})'
-        # )
-        data1.append(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x)
-        f = open('1.txt', 'a')
-        f.write(f"{hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x}")
-        f.write("\n")
-        f.close
-        # if hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y > \
-        #         hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP].y:
-        #     print("execute 'hack pentagon.bat'")
-        height = hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y - \
-                 hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP].y
-        #print(height)
-        if height > 0.22:
-            print('close')
-        if height < 0.18:
-            print('far')
+        function1()
+
     # Flip the image horizontally for a selfie-view display.
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
     if cv2.waitKey(5) & 0xFF == 27:
       break
 cap.release()
-
-print(data1)
